@@ -4,10 +4,6 @@ import "./DarkNodeRegistry.sol";
 
 contract Hyperdrive {
 
-    struct Tx {
-        bytes32[] nonces;
-    }
-
     mapping(bytes32 => bool) nonces;
 
     DarkNodeRegistry darknodeRegistry;
@@ -17,16 +13,16 @@ contract Hyperdrive {
         _;
     } 
 
-    function Hyperdrive() public {
+    function Hyperdrive(address dnr) public {
+        darknodeRegistry = DarkNodeRegistry(dnr);
     }
 
-    function sendTx(Tx transaction) public onlyDarknode(msg.sender) {
-        for (uint256 i = 0; i < transaction.nonces.length; i++) {
-            require(!nonces[transaction.nonces[i]]);
+    function sendTx(bytes32[] tx) public onlyDarknode(msg.sender) {
+        for (uint256 i = 0; i < tx.length; i++) {
+            require(!nonces[tx[i]]);
         }
-        for (uint256 i = 0; i < transaction.nonces.length; i++) {
-            nonces[transaction.nonces[i]] = true;
+        for (i = 0; i < tx.length; i++) {
+            nonces[tx[i]] = true;
         }
     }
-
 }
