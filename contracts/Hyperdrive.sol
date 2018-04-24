@@ -21,7 +21,7 @@ contract Hyperdrive {
 
     function sendTx(bytes32[] tx) public onlyDarknode(msg.sender) {
         for (uint256 i = 0; i < tx.length; i++) {
-            require(!nonces[tx[i]]);
+            require(nonces[tx[i]] == 0);
         }
         for (i = 0; i < tx.length; i++) {
             nonces[tx[i]] = block.number;
@@ -29,7 +29,7 @@ contract Hyperdrive {
         }
     }
 
-    function depth(bytes32 nonce) public view returns(uint256) {
+    function depth(bytes32 nonce) public view returns (uint256) {
         if (nonces[nonce] == 0) {
             return 0;
         }
