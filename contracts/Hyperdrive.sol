@@ -4,14 +4,16 @@ import "./DarkNodeRegistry.sol";
 
 contract Hyperdrive {
 
-    mapping(bytes32 => bool) nonces;
+    event Tx(bytes32 nonce);
+
+    mapping(bytes32 => uint256) public nonces;
 
     DarkNodeRegistry darknodeRegistry;
 
     modifier onlyDarknode(address sender) {
         require(darknodeRegistry.isRegistered(bytes20(sender)));
         _;
-    } 
+    }
 
     function Hyperdrive(address dnr) public {
         darknodeRegistry = DarkNodeRegistry(dnr);
@@ -22,7 +24,15 @@ contract Hyperdrive {
             require(!nonces[tx[i]]);
         }
         for (i = 0; i < tx.length; i++) {
-            nonces[tx[i]] = true;
+            nonces[tx[i]] = block.number;
+            emit Tx(tx[i]);
         }
+    }
+
+    function depth(bytes32 nonce) public view returns(uint256) {
+        if (nonces[nonce] == 0) {
+            return 0;
+        }
+        return (block.number - nonces[nonce]);
     }
 }

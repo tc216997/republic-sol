@@ -29,7 +29,6 @@ contract("Hyperdrive", function (accounts) {
         for (i = 0; i < accounts.length; i++) {
             assert.equal((await dnr.isRegistered(accounts[i])), true);
         }
-
     });
 
     it("can send tx which has no conflicts", async () => {
